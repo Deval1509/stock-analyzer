@@ -50,33 +50,33 @@ const StockViewer = () => {
         setError("Please select a stock and a valid date range.");
         return;
       }
-
+  
       if (new Date(fromDate) > new Date(toDate)) {
         setError("The 'From' date cannot be later than the 'To' date.");
         return;
       }
-
-      setLoading(true);
-      setError("");
-
+  
+      console.log("Fetching data for:", { symbol, fromDate, toDate });
+  
       const response = await axios.get(
         "https://stock-analyzer-db.onrender.com/historical",
         {
           params: { symbol, from: fromDate, to: toDate },
         }
       );
-
-      if (response.data?.prices?.length > 0) {
+  
+      console.log("Response data:", response.data);
+  
+      if (response.data && response.data.prices) {
         setHistoricalData(response.data.prices);
+        setError("");
       } else {
         setError("No historical data available for the selected range.");
         setHistoricalData([]);
       }
     } catch (err) {
-      setError("Failed to fetch historical data. Please try again.");
-      console.error(err);
-    } finally {
-      setLoading(false);
+      setError("Failed to fetch historical data.");
+      console.error("Error fetching data:", err);
     }
   };
 
