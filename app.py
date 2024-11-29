@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 # Enabling CORS to allow requests from React frontend
-CORS(app, resources={r"/*": {"origins": "https://deval1509.github.io/stock-analyzer/"}})
+CORS(app, resources={r"/*": {"origins": "https://deval1509.github.io"}})
 
 API_KEY = os.getenv("API_KEY")
 BASE_URL = "https://financialmodelingprep.com/api/v3"
