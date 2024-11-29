@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { Line } from "react-chartjs-2";
@@ -10,24 +10,27 @@ const StockViewer = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [symbol, setSymbol] = useState("");
   const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState(""); 
+  const [toDate, setToDate] = useState("");
   const [historicalData, setHistoricalData] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-
   // Fetch search results based on query
   const handleSearch = async (query) => {
     try {
-      setSearchTerm(query); 
+      setSearchTerm(query);
       if (query.length < 2) {
         setSearchResults([]);
         return;
       }
-      const response = await axios.get("https://stock-analyzer-db.onrender.com/search", {
-        params: { query, _: new Date().getTime() },
-      });
-      
+
+      const response = await axios.get(
+        "https://stock-analyzer-db.onrender.com/search",
+        {
+          params: { query, _: new Date().getTime() },
+        }
+      );
+
       const results = response.data.map((stock) => ({
         value: stock.symbol,
         label: `${stock.name} (${stock.symbol})`,
@@ -36,46 +39,48 @@ const StockViewer = () => {
     } catch (err) {
       setSearchResults([]);
       setError("Failed to fetch search results.");
+      console.error(err);
     }
   };
 
   // Fetch historical data based on selected stock and date range
   const fetchHistoricalData = async () => {
     try {
-      console.log("Symbol:", symbol, "From:", fromDate, "To:", toDate); 
-  
       if (!symbol || !fromDate || !toDate) {
         setError("Please select a stock and a valid date range.");
         return;
       }
-  
+
       if (new Date(fromDate) > new Date(toDate)) {
         setError("The 'From' date cannot be later than the 'To' date.");
         return;
       }
-  
+
       setLoading(true);
-      const response = await axios.get("https://stock-analyzer-db.onrender.com/historical", {
-        params: { symbol, from: fromDate, to: toDate },
-      });
-  
-      if (response.data && response.data.prices && response.data.prices.length > 0) {
+      setError("");
+
+      const response = await axios.get(
+        "https://stock-analyzer-db.onrender.com/historical",
+        {
+          params: { symbol, from: fromDate, to: toDate },
+        }
+      );
+
+      if (response.data?.prices?.length > 0) {
         setHistoricalData(response.data.prices);
-        setError("");
       } else {
         setError("No historical data available for the selected range.");
         setHistoricalData([]);
       }
     } catch (err) {
-      setError("Failed to fetch historical data.");
-      console.error(err); 
+      setError("Failed to fetch historical data. Please try again.");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
-  
-  
-  // Extract time and price data for historical chart
+
+  // Extract time and price data for the historical chart
   const historicalTimes = historicalData.map((entry) => entry.time);
   const historicalPrices = historicalData.map((entry) => entry.price);
 
@@ -89,7 +94,7 @@ const StockViewer = () => {
           inputValue={searchTerm}
           onInputChange={(value) => handleSearch(value)}
           options={searchResults}
-          onChange={(selectedOption) => setSymbol(selectedOption.value)} 
+          onChange={(selectedOption) => setSymbol(selectedOption.value)}
           placeholder="Search for a stock (e.g., AAPL)"
           styles={customSelectStyles}
         />
@@ -113,7 +118,9 @@ const StockViewer = () => {
             onChange={(e) => setToDate(e.target.value)}
           />
         </label>
-        <button onClick={fetchHistoricalData}>Fetch Data</button>
+        <button onClick={fetchHistoricalData} disabled={loading}>
+          {loading ? "Fetching..." : "Fetch Data"}
+        </button>
       </div>
 
       {error && <p className="error-message">{error}</p>}
