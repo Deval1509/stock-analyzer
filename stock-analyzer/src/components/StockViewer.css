@@ -1,0 +1,98 @@
+/* Container for the entire application */
+.stock-viewer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Arial, sans-serif';
+    background-color: #ecf0f1;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Header styling */
+.stock-viewer-header {
+    font-size: 2.5em;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Container for the search input */
+.stock-input-container {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+/* Error message styling */
+.error-message {
+    color: #e74c3c;
+    margin-top: 10px;
+    font-size: 1em;
+}
+
+/* Container for the chart */
+.chart-container {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.chart-container:hover {
+    transform: scale(1.02);
+}
+
+/* Custom styles for the Select component */
+.react-select__control {
+    padding: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.react-select__control:hover {
+    border-color: #3498db;
+}
+
+.react-select__menu {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.react-select__option--is-focused {
+    background-color: #f0f0f0;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.react-select__option--is-selected {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+}
+
+/* Accessibility: Focus outline */
+.react-select__control:focus-within {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .stock-viewer-header {
+        font-size: 2em;
+    }
+
+    .chart-container {
+        height: auto; 
+    }
+    
+    .stock-input-container {
+        max-width: 100%; 
+    }
+}
