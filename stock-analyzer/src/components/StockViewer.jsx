@@ -9,22 +9,23 @@ const StockViewer = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [symbol, setSymbol] = useState("");
-  const [fromDate, setFromDate] = useState(""); // New state for FROM date
-  const [toDate, setToDate] = useState(""); // New state for TO date
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState(""); 
   const [historicalData, setHistoricalData] = useState([]);
   const [error, setError] = useState("");
 
   // Fetch search results based on query
   const handleSearch = async (query) => {
     try {
-      setSearchTerm(query); // Update search term
+      setSearchTerm(query); 
       if (query.length < 2) {
         setSearchResults([]);
         return;
       }
-      const response = await axios.get("http://127.0.0.1:5000/search", {
+      const response = await axios.get("https://stock-analyzer-db.onrender.com/search", {
         params: { query, _: new Date().getTime() },
       });
+      
       const results = response.data.map((stock) => ({
         value: stock.symbol,
         label: `${stock.name} (${stock.symbol})`,
@@ -39,16 +40,17 @@ const StockViewer = () => {
   // Fetch historical data based on selected stock and date range
   const fetchHistoricalData = async () => {
     try {
-      console.log("Symbol:", symbol, "From:", fromDate, "To:", toDate); // Debug log
+      console.log("Symbol:", symbol, "From:", fromDate, "To:", toDate); 
   
       if (!symbol || !fromDate || !toDate) {
         setError("Please select a stock and a valid date range.");
         return;
       }
   
-      const response = await axios.get("http://127.0.0.1:5000/historical", {
+      const response = await axios.get("https://stock-analyzer-db.onrender.com/historical", {
         params: { symbol, from: fromDate, to: toDate },
       });
+      
       setHistoricalData(response.data.prices);
     } catch (err) {
       setError("Failed to fetch historical data.");
@@ -70,7 +72,7 @@ const StockViewer = () => {
           inputValue={searchTerm}
           onInputChange={(value) => handleSearch(value)}
           options={searchResults}
-          onChange={(selectedOption) => setSymbol(selectedOption.value)} // Set selected stock
+          onChange={(selectedOption) => setSymbol(selectedOption.value)} 
           placeholder="Search for a stock (e.g., AAPL)"
           styles={customSelectStyles}
         />

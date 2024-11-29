@@ -2,13 +2,19 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 # Enabling CORS to allow requests from React frontend
-CORS(app)  
+CORS(app, resources={r"/*": {"origins": "https://deval1509.github.io/stock-analyzer/"}})
 
-API_KEY = "FUBR1JfW34uaqrFUTKQ82EpOH9z8JrvF"
+API_KEY = os.getenv("API_KEY")
 BASE_URL = "https://financialmodelingprep.com/api/v3"
+
+## health check for backend
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "ok"}), 200
 
 @app.route("/search", methods=["GET"])
 def search_stocks():
@@ -56,55 +62,54 @@ def get_stock_data():
 ## Show historical charts for SEARCHED stocks
 @app.route("/historical", methods=["GET"])
 def get_historical_data():
-    """
-    Fetches historical stock data for a given stock symbol and date range.
-    """
     symbol = request.args.get("symbol")
     from_date = request.args.get("from")
     to_date = request.args.get("to")
+    page = int(request.args.get("page", 1))  # Default to page 1
+    page_size = int(request.args.get("page_size", 50))  # Default to 50 records per page
 
-    # Validate inputs
     if not symbol or not from_date or not to_date:
         return jsonify({"error": "Stock symbol and date range are required."}), 400
 
     try:
-        # Validate date format
-        from_date_obj = datetime.strptime(from_date, "%Y-%m-%d")
-        to_date_obj = datetime.strptime(to_date, "%Y-%m-%d")
-
-        # Fetch historical data from Financial Modeling Prep API
+        # Fetch historical data from Financial Modeling Prep
         response = requests.get(
-            f"{BASE_URL}/historical-price-full/{symbol}",
-            params={"apikey": API_KEY}
+            f"{BASE_URL}/historical-price-full/{symbol}?apikey={API_KEY}"
         )
         data = response.json()
 
-        # Check if historical data exists
-        if "historical" not in data or not data["historical"]:
-            return jsonify({"error": "No historical data available."}), 404
+        # Check for errors in the response
+        if "historical" not in data:
+            return jsonify({"error": "Failed to fetch historical data."}), 400
 
         historical_data = data["historical"]
 
-        # Filter data within the date range
+        # Parse and filter the data based on the date range
+        from_date = datetime.strptime(from_date, "%Y-%m-%d")
+        to_date = datetime.strptime(to_date, "%Y-%m-%d")
+
         filtered_data = [
             {"time": item["date"], "price": item["close"]}
             for item in historical_data
-            if from_date_obj <= datetime.strptime(item["date"], "%Y-%m-%d") <= to_date_obj
+            if from_date <= datetime.strptime(item["date"], "%Y-%m-%d") <= to_date
         ]
 
-        # If no data is available for the given range
-        if not filtered_data:
-            return jsonify({"error": "No data available for the given date range."}), 404
+        # Paginate the filtered data
+        total_records = len(filtered_data)
+        start_index = (page - 1) * page_size
+        end_index = start_index + page_size
+        paginated_data = filtered_data[start_index:end_index]
 
-        # Return filtered historical data
-        return jsonify({"symbol": symbol, "prices": filtered_data})
-    except ValueError:
-        return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": f"External API request failed: {str(e)}"}), 500
+        # Return paginated results with metadata
+        return jsonify({
+            "symbol": symbol,
+            "total_records": total_records,
+            "page": page,
+            "page_size": page_size,
+            "total_pages": (total_records + page_size - 1) // page_size,  
+            "data": paginated_data
+        })
     except Exception as e:
-        print("Error occurred:", e)
-        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
-
+        return jsonify({"error": str(e)}), 500
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
