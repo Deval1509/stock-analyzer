@@ -15,17 +15,18 @@ const StockViewer = () => {
   const [error, setError] = useState("");
 
   // Fetch search results based on query
-  const handleSearch = async (query) => {
+  const handleSearch = useCallback(async (query) => {
     try {
-      setSearchTerm(query); 
+      setSearchTerm(query);
       if (query.length < 2) {
         setSearchResults([]);
         return;
       }
+  
       const response = await axios.get("https://stock-analyzer-db.onrender.com/search", {
         params: { query, _: new Date().getTime() },
       });
-      
+  
       const results = response.data.map((stock) => ({
         value: stock.symbol,
         label: `${stock.name} (${stock.symbol})`,
@@ -34,9 +35,10 @@ const StockViewer = () => {
     } catch (err) {
       setSearchResults([]);
       setError("Failed to fetch search results.");
+      console.error(err);
     }
-  };
-
+  }, []);
+  
   // Fetch historical data based on selected stock and date range
   const fetchHistoricalData = async () => {
     try {
@@ -47,16 +49,31 @@ const StockViewer = () => {
         return;
       }
   
+      if (new Date(fromDate) > new Date(toDate)) {
+        setError("The 'From' date cannot be later than the 'To' date.");
+        return;
+      }
+  
+      setLoading(true);
       const response = await axios.get("https://stock-analyzer-db.onrender.com/historical", {
         params: { symbol, from: fromDate, to: toDate },
       });
-      
-      setHistoricalData(response.data.prices);
+  
+      if (response.data && response.data.prices && response.data.prices.length > 0) {
+        setHistoricalData(response.data.prices);
+        setError("");
+      } else {
+        setError("No historical data available for the selected range.");
+        setHistoricalData([]);
+      }
     } catch (err) {
       setError("Failed to fetch historical data.");
       console.error(err); 
+    } finally {
+      setLoading(false);
     }
   };
+  
   
   // Extract time and price data for historical chart
   const historicalTimes = historicalData.map((entry) => entry.time);
