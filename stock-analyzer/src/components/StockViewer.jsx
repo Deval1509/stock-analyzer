@@ -15,18 +15,17 @@ const StockViewer = () => {
   const [error, setError] = useState("");
 
   // Fetch search results based on query
-  const handleSearch = useCallback(async (query) => {
+  const handleSearch = async (query) => {
     try {
-      setSearchTerm(query);
+      setSearchTerm(query); 
       if (query.length < 2) {
         setSearchResults([]);
         return;
       }
-  
       const response = await axios.get("https://stock-analyzer-db.onrender.com/search", {
         params: { query, _: new Date().getTime() },
       });
-  
+      
       const results = response.data.map((stock) => ({
         value: stock.symbol,
         label: `${stock.name} (${stock.symbol})`,
@@ -35,10 +34,9 @@ const StockViewer = () => {
     } catch (err) {
       setSearchResults([]);
       setError("Failed to fetch search results.");
-      console.error(err);
     }
-  }, []);
-  
+  };
+
   // Fetch historical data based on selected stock and date range
   const fetchHistoricalData = async () => {
     try {
