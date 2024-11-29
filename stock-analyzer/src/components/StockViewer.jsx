@@ -13,6 +13,8 @@ const StockViewer = () => {
   const [toDate, setToDate] = useState(""); 
   const [historicalData, setHistoricalData] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   // Fetch search results based on query
   const handleSearch = async (query) => {
