@@ -2,30 +2,18 @@
 
 🚀 **Stock Analyzer** is a powerful tool for analyzing stock trends, visualizing data, and making informed investment decisions. It leverages **React**, **Chart.js**, and **API integrations** to provide real-time insights into the stock market.
 
----
-
-## **Table of Contents**
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Setup Instructions](#setup-instructions)
-- [How to Use](#how-to-use)
-- [Future Features](#future-features)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
+--
 ## **Features**
 - 📊 **Visualize Stock Data**: Interactive charts using `Chart.js` to display historical and real-time stock trends.
 - 🔄 **Dynamic Stock Selector**: Use `react-select` for a smooth and customizable dropdown to pick stocks.
-- 📡 **Live API Integration**: Fetch real-time stock data and analyze patterns over different time intervals.
+- 📡 **Live API Integration**: Fetch real-time(For time being I manually need to change Backend API Key) to get stock data and analyze patterns over different time intervals.
 - 📈 **User-Friendly Dashboard**: Modern UI for stock trend visualization and easy navigation.
 
 ---
 
 ## **Tech Stack**
 - **Frontend**: React.js, Chart.js, React-Select
-- **Backend (Optional)**: Flask (for additional APIs if integrated)
+- **Backend**: Python, Flask 
 - **Deployment**: GitHub Pages, Vite
 - **Utilities**: Axios for API calls
 
