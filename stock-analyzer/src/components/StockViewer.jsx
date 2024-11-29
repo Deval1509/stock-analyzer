@@ -9,14 +9,15 @@ const StockViewer = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [symbol, setSymbol] = useState("");
+  const [fromDate, setFromDate] = useState(""); // New state for FROM date
+  const [toDate, setToDate] = useState(""); // New state for TO date
   const [historicalData, setHistoricalData] = useState([]);
   const [error, setError] = useState("");
 
   // Fetch search results based on query
   const handleSearch = async (query) => {
     try {
-      // Update the state to reflect what the user types
-      setSearchTerm(query); 
+      setSearchTerm(query); // Update search term
       if (query.length < 2) {
         setSearchResults([]);
         return;
@@ -35,23 +36,26 @@ const StockViewer = () => {
     }
   };
 
-  // Fetch 6-month historical data after stock is selected
-  const handleStockSelection = async (selectedOption) => {
+  // Fetch historical data based on selected stock and date range
+  const fetchHistoricalData = async () => {
     try {
-      // Set the selected stock symbol
-      setSymbol(selectedOption.value);
-      // Clear previous errors
-      setError(""); 
-
+      console.log("Symbol:", symbol, "From:", fromDate, "To:", toDate); // Debug log
+  
+      if (!symbol || !fromDate || !toDate) {
+        setError("Please select a stock and a valid date range.");
+        return;
+      }
+  
       const response = await axios.get("http://127.0.0.1:5000/historical", {
-        params: { symbol: selectedOption.value },
+        params: { symbol, from: fromDate, to: toDate },
       });
-      setHistoricalData(response.data.prices); 
+      setHistoricalData(response.data.prices);
     } catch (err) {
-      setError("Failed to fetch historical data. Please check the symbol.");
+      setError("Failed to fetch historical data.");
+      console.error(err); 
     }
   };
-
+  
   // Extract time and price data for historical chart
   const historicalTimes = historicalData.map((entry) => entry.time);
   const historicalPrices = historicalData.map((entry) => entry.price);
@@ -59,22 +63,46 @@ const StockViewer = () => {
   return (
     <div className="stock-viewer-container">
       <h1 className="stock-viewer-header">Stock Price Analyzer</h1>
+
       <div className="stock-input-container">
+        {/* Stock Search Input */}
         <Select
           inputValue={searchTerm}
           onInputChange={(value) => handleSearch(value)}
           options={searchResults}
-          onChange={handleStockSelection} 
+          onChange={(selectedOption) => setSymbol(selectedOption.value)} // Set selected stock
           placeholder="Search for a stock (e.g., AAPL)"
           styles={customSelectStyles}
         />
       </div>
 
+      {/* Date Range Inputs */}
+      <div className="date-input-container">
+        <label>
+          From:
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
+        </label>
+        <label>
+          To:
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
+        </label>
+        <button onClick={fetchHistoricalData}>Fetch Data</button>
+      </div>
+
       {error && <p className="error-message">{error}</p>}
 
+      {/* Display Chart */}
       {historicalData.length > 0 && (
         <div className="chart-container">
-          <h2>Historical Data (Last 6 Months)</h2>
+          <h2>Historical Data ({fromDate} to {toDate})</h2>
           <Line
             data={{
               labels: historicalTimes,
@@ -96,20 +124,14 @@ const StockViewer = () => {
               plugins: {
                 tooltip: {
                   callbacks: {
-                    // Customize tooltip content
-                    label: function (context) {
-                      return `Price: $${context.raw.toFixed(2)}`;
-                    },
+                    label: (context) => `Price: $${context.raw.toFixed(2)}`,
                   },
                 },
                 legend: {
                   display: true,
-                  position: "top", 
+                  position: "top",
                 },
               },
-              interaction: {
-                mode: "index", 
-                intersect: false,              },
               scales: {
                 x: {
                   title: {

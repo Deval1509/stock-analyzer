@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
+from datetime import datetime
 
 app = Flask(__name__)
 # Enabling CORS to allow requests from React frontend
@@ -55,27 +56,55 @@ def get_stock_data():
 ## Show historical charts for SEARCHED stocks
 @app.route("/historical", methods=["GET"])
 def get_historical_data():
+    """
+    Fetches historical stock data for a given stock symbol and date range.
+    """
     symbol = request.args.get("symbol")
-    if not symbol:
-        return jsonify({"error": "Stock symbol is required"}), 400
+    from_date = request.args.get("from")
+    to_date = request.args.get("to")
+
+    # Validate inputs
+    if not symbol or not from_date or not to_date:
+        return jsonify({"error": "Stock symbol and date range are required."}), 400
 
     try:
-        # Fetch historical data for the past 6 months
-        response = requests.get(f"{BASE_URL}/historical-price-full/{symbol}?apikey={API_KEY}")
+        # Validate date format
+        from_date_obj = datetime.strptime(from_date, "%Y-%m-%d")
+        to_date_obj = datetime.strptime(to_date, "%Y-%m-%d")
+
+        # Fetch historical data from Financial Modeling Prep API
+        response = requests.get(
+            f"{BASE_URL}/historical-price-full/{symbol}",
+            params={"apikey": API_KEY}
+        )
         data = response.json()
-        if not data or "Error Message" in data:
-            return jsonify({"error": "Failed to fetch historical data."}), 400
 
-        # Filter the last 6 months of data
-        historical_prices = data["historical"][:180] 
-        prices = [
+        # Check if historical data exists
+        if "historical" not in data or not data["historical"]:
+            return jsonify({"error": "No historical data available."}), 404
+
+        historical_data = data["historical"]
+
+        # Filter data within the date range
+        filtered_data = [
             {"time": item["date"], "price": item["close"]}
-            for item in historical_prices
+            for item in historical_data
+            if from_date_obj <= datetime.strptime(item["date"], "%Y-%m-%d") <= to_date_obj
         ]
-        return jsonify({"symbol": symbol, "prices": prices})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
+        # If no data is available for the given range
+        if not filtered_data:
+            return jsonify({"error": "No data available for the given date range."}), 404
+
+        # Return filtered historical data
+        return jsonify({"symbol": symbol, "prices": filtered_data})
+    except ValueError:
+        return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": f"External API request failed: {str(e)}"}), 500
+    except Exception as e:
+        print("Error occurred:", e)
+        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
