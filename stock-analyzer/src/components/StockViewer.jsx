@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import Select from "react-select";
 import { Line } from "react-chartjs-2";
-import { Chart as ChartJS } from "chart.js/auto";
 import "./StockViewer.css";
 
 const StockViewer = () => {
@@ -14,12 +13,6 @@ const StockViewer = () => {
   const [historicalData, setHistoricalData] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isChartMaximized, setIsChartMaximized] = useState(false);
-
-  // Toggle chart size
-  const toggleChartSize = () => {
-    setIsChartMaximized((prev) => !prev);
-  };
 
   // Fetch search results based on query
   const handleSearch = async (query) => {
@@ -91,6 +84,10 @@ const StockViewer = () => {
   const historicalTimes = historicalData.map((entry) => entry.time);
   const historicalPrices = historicalData.map((entry) => entry.price);
 
+  // Calculate suggested Y-axis bounds
+  const suggestedMin = Math.min(...historicalPrices) * 0.95 || 0; 
+  const suggestedMax = Math.max(...historicalPrices) * 1.05 || 100; 
+
   return (
     <div className="stock-viewer-container">
       {/* Header */}
@@ -140,14 +137,7 @@ const StockViewer = () => {
   
       {/* Chart Container */}
       {historicalData.length > 0 && (
-        <div
-          className={`chart-container ${
-            isChartMaximized ? "maximized" : "minimized"
-          }`}
-        >
-          <button className="chart-toggle-button" onClick={toggleChartSize}>
-            {isChartMaximized ? "Minimize" : "Maximize"}
-          </button>
+        <div className="chart-container">
           <h2>
             Historical Data ({fromDate} to {toDate})
           </h2>
@@ -161,7 +151,8 @@ const StockViewer = () => {
                   borderColor: "#3498db",
                   backgroundColor: "rgba(52, 152, 219, 0.5)",
                   pointRadius: 5,
-                  pointHoverRadius: 8,
+                  pointHoverRadius: 10,
+                  hoverBorderWidth: 3, 
                   fill: true,
                 },
               ],
@@ -197,7 +188,7 @@ const StockViewer = () => {
                     },
                   },
                   grid: {
-                    display: true, 
+                    display: true,
                   },
                 },
                 y: {
@@ -205,22 +196,24 @@ const StockViewer = () => {
                     display: true,
                     text: "Price (USD)",
                   },
-                  ticks: {
-                    beginAtZero: false, // Let the Y-axis start close to the lowest value
-                  },
-                  suggestedMin: Math.min(...historicalPrices) * 0.9, // Set min slightly below the lowest price
-                  suggestedMax: Math.max(...historicalPrices) * 1.1, // Set max slightly above the highest price
+                  suggestedMin,
+                  suggestedMax,
                   grid: {
                     drawBorder: true,
                   },
                 },
+              },
+              interaction: {
+                mode: "nearest", 
+                axis: "x",
+                intersect: false,
               },
             }}
           />
         </div>
       )}
     </div>
-  );  
+  );
 };
 
 export default StockViewer;
