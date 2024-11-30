@@ -13,7 +13,7 @@ import {
   Tooltip,
   Legend,
   Filler,
-} from 'chart.js';
+} from "chart.js";
 
 // Register necessary components
 ChartJS.register(
@@ -107,12 +107,14 @@ const StockViewer = () => {
   const historicalTimes = historicalData.map((entry) => entry.time);
   const historicalPrices = historicalData.map((entry) => entry.price);
 
+  // Ensure proper date formatting for the date inputs
+  const formatDate = (date) => (date ? new Date(date).toISOString().split("T")[0] : "");
 
   return (
     <div className="stock-viewer-container">
       {/* Header */}
       <h1 className="stock-viewer-header">Stock Price Analyzer</h1>
-  
+
       {/* Stock Search Input */}
       <div className="stock-input-container">
         <Select
@@ -124,14 +126,14 @@ const StockViewer = () => {
           styles={customSelectStyles}
         />
       </div>
-  
+
       {/* Date Range Inputs */}
       <div className="date-input-container">
         <label>
           From:
           <input
             type="date"
-            value={fromDate}
+            value={formatDate(fromDate)}
             onChange={(e) => setFromDate(e.target.value)}
           />
         </label>
@@ -139,27 +141,27 @@ const StockViewer = () => {
           To:
           <input
             type="date"
-            value={toDate}
+            value={formatDate(toDate)}
             onChange={(e) => setToDate(e.target.value)}
           />
         </label>
       </div>
-  
+
       {/* Fetch Button */}
       <div className="fetch-button-container">
         <button onClick={fetchHistoricalData} disabled={loading}>
           {loading ? "Fetching..." : "Fetch Data"}
         </button>
       </div>
-  
+
       {/* Error Message */}
       {error && <p className="error-message">{error}</p>}
-  
+
       {/* Chart Container */}
       {historicalData.length > 0 && (
         <div className="chart-container">
           <h2>
-            Historical Data ({fromDate} to {toDate})
+            Historical Data ({formatDate(fromDate)} to {formatDate(toDate)})
           </h2>
           <Line
             data={{
@@ -178,8 +180,7 @@ const StockViewer = () => {
             }}
             options={{
               responsive: true,
-              maintainAspectRatio: true, // Keeps the aspect ratio of the chart
-              aspectRatio: 2, // Set the width:height ratio (e.g., 2 means 2:1)
+              maintainAspectRatio: false,
               plugins: {
                 tooltip: {
                   callbacks: {
