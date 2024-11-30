@@ -133,14 +133,20 @@ const StockViewer = () => {
       {historicalData.length > 0 && (
         <div
           className={`chart-container ${
-            isChartMaximized ? "minimized" : "maximized"
+            isChartMaximized ? "maximized" : "minimized"
           }`}
+          style={{
+            width: isChartMaximized ? "90%" : "100%",
+            height: isChartMaximized ? "90vh" : "60vh",
+            maxWidth: "1200px",
+            margin: "0 auto",
+          }}
         >
           <button
             className="chart-toggle-button"
             onClick={toggleChartSize}
           >
-            {isChartMaximized ? "Maximize" : "Minimize"}
+            {isChartMaximized ? "Minimize" : "Maximize"}
           </button>
           <h2>
             Historical Data ({fromDate} to {toDate})
@@ -181,6 +187,10 @@ const StockViewer = () => {
                     display: true,
                     text: "Date",
                   },
+                  ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 10,
+                  },
                 },
                 y: {
                   title: {
@@ -199,7 +209,6 @@ const StockViewer = () => {
 
 export default StockViewer;
 
-// Custom styles for Select
 const customSelectStyles = {
   container: (provided) => ({
     ...provided,

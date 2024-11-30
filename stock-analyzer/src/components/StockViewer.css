@@ -3,55 +3,59 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 2%;
     font-family: 'Arial, sans-serif';
     background-color: #ecf0f1;
     min-height: 100vh;
     box-sizing: border-box;
-  }
-  
-  /* Header styling */
-  .stock-viewer-header {
+    overflow: hidden;
+}
+
+/* Header styling */
+.stock-viewer-header {
     font-size: 2.5em;
     color: #2c3e50;
-    margin-bottom: 20px;
+    margin-bottom: 2%;
     text-align: center;
-  }
-  
-  /* Container for the search input */
-  .stock-input-container {
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 20px;
-  }
-  
-  /* Date input container */
-  .date-input-container {
+}
+
+/* Container for the search input */
+.stock-input-container {
+    width: 90%;
+    max-width: 90%;
+    margin-bottom: 2%;
+}
+
+/* Date input container */
+.date-input-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .date-input-container label {
+    gap: 2%;
+    margin-bottom: 2%;
+    width: 100%;
+}
+
+.date-input-container label {
     font-size: 1em;
     color: #2c3e50;
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  
-  .date-input-container input {
+    width: 40%; /* Percentage width */
+}
+
+.date-input-container input {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-top: 5px;
     font-size: 1em;
-  }
-  
-  .date-input-container button {
-    padding: 10px 20px;
+    width: 100%; /* Responsive input */
+}
+
+.date-input-container button {
+    padding: 10px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -59,59 +63,56 @@
     cursor: pointer;
     font-size: 1em;
     transition: background-color 0.3s ease-in-out;
-  }
-  
-  .date-input-container button:hover {
+}
+
+.date-input-container button:hover {
     background-color: #2980b9;
-  }
-  
-  .date-input-container button:disabled {
+}
+
+.date-input-container button:disabled {
     background-color: #95a5a6;
     cursor: not-allowed;
-  }
-  
-  /* Error message styling */
-  .error-message {
+}
+
+/* Error message styling */
+.error-message {
     color: #e74c3c;
-    margin-top: 10px;
+    margin-top: 1%;
     font-size: 1em;
     text-align: center;
-  }
-  
-  /* Chart container styling */
-  .chart-container {
-    width: 100%;
-    max-width: 800px;
-    height: 400px;
+}
+
+/* Chart container styling */
+.chart-container {
+    width: 90%; /* Dynamic width */
+    height: 60%; /* Dynamic height */
     background-color: #fff;
-    padding: 20px;
+    padding: 2%;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
     transition: transform 0.3s ease-in-out, height 0.3s ease-in-out;
-  }
-  
-  .chart-container.maximized {
-    width: 90%;
-    max-width: none;
-    height: 90vh;
-  }
-  
-  .chart-container.minimized {
+}
+
+.chart-container.maximized {
     width: 100%;
-    height: 400px;
-  }
-  
-  .chart-container h2 {
-    margin-bottom: 20px;
+    height: 90vh; /* Adjust for fullscreen height */
+}
+
+.chart-container.minimized {
+    height: 60%;
+}
+
+.chart-container h2 {
+    margin-bottom: 2%;
     text-align: center;
     font-size: 1.5em;
     color: #2c3e50;
-  }
-  
-  /* Toggle button for the chart */
-  .chart-toggle-button {
+}
+
+/* Toggle button for the chart */
+.chart-toggle-button {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -123,80 +124,77 @@
     cursor: pointer;
     font-size: 0.9em;
     transition: background-color 0.3s ease-in-out;
-  }
-  
-  .chart-toggle-button:hover {
+}
+
+.chart-toggle-button:hover {
     background-color: #2980b9;
-  }
-  
-  /* Custom styles for the Select component */
-  .react-select__control {
+}
+
+/* Custom styles for the Select component */
+.react-select__control {
     padding: 5px;
     border-radius: 8px;
     border: 1px solid #ccc;
     transition: border-color 0.3s ease-in-out;
-  }
-  
-  .react-select__control:hover {
+}
+
+.react-select__control:hover {
     border-color: #3498db;
-  }
-  
-  .react-select__menu {
+}
+
+.react-select__menu {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .react-select__option--is-focused {
+}
+
+.react-select__option--is-focused {
     background-color: #f0f0f0;
     transition: background-color 0.3s ease-in-out;
-  }
-  
-  .react-select__option--is-selected {
+}
+
+.react-select__option--is-selected {
     background-color: #3498db;
     color: white;
     font-weight: bold;
-  }
-  
-  /* Accessibility: Focus outline */
-  .react-select__control:focus-within {
+}
+
+/* Accessibility: Focus outline */
+.react-select__control:focus-within {
     border-color: #3498db;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5);
-  }
-  
-  /* Responsive design for mobile */
-  @media (max-width: 768px) {
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
     .stock-viewer-header {
-      font-size: 2em;
+        font-size: 2em;
     }
-  
+
     .stock-input-container {
-      max-width: 90%;
+        max-width: 100%;
     }
-  
+
     .date-input-container {
-      flex-direction: column;
-      gap: 15px;
+        flex-direction: column;
+        gap: 5%;
+        width: 100%;
     }
-  
-    .date-input-container label {
-      font-size: 1em;
-    }
-  
+
     .chart-container {
-      height: 300px;
-      padding: 15px;
+        width: 100%;
+        height: 70%;
+        padding: 5%;
     }
-  
+
     .chart-container.maximized {
-      height: 80vh;
+        height: 90vh;
     }
-  
+
     .chart-container.minimized {
-      height: 300px;
+        height: 70%; 
     }
-  
+
     .chart-toggle-button {
-      font-size: 0.8em;
+        font-size: 0.8em;
     }
-  }
-  
+}
