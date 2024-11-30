@@ -107,9 +107,6 @@ const StockViewer = () => {
   const historicalTimes = historicalData.map((entry) => entry.time);
   const historicalPrices = historicalData.map((entry) => entry.price);
 
-  // Ensure proper date formatting for the date inputs
-  const formatDate = (date) => (date ? new Date(date).toISOString().split("T")[0] : "");
-
   return (
     <div className="stock-viewer-container">
       {/* Header */}
@@ -133,7 +130,7 @@ const StockViewer = () => {
           From:
           <input
             type="date"
-            value={formatDate(fromDate)}
+            value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
           />
         </label>
@@ -141,7 +138,7 @@ const StockViewer = () => {
           To:
           <input
             type="date"
-            value={formatDate(toDate)}
+            value={toDate}
             onChange={(e) => setToDate(e.target.value)}
           />
         </label>
@@ -161,7 +158,7 @@ const StockViewer = () => {
       {historicalData.length > 0 && (
         <div className="chart-container">
           <h2>
-            Historical Data ({formatDate(fromDate)} to {formatDate(toDate)})
+            Historical Data ({fromDate} to {toDate})
           </h2>
           <Line
             data={{
@@ -180,7 +177,7 @@ const StockViewer = () => {
             }}
             options={{
               responsive: true,
-              maintainAspectRatio: false,
+              maintainAspectRatio: true,
               plugins: {
                 tooltip: {
                   callbacks: {
@@ -204,9 +201,6 @@ const StockViewer = () => {
                   ticks: {
                     autoSkip: true,
                     maxTicksLimit: 10,
-                    font: {
-                      size: 12,
-                    },
                   },
                   grid: {
                     display: true,
@@ -218,7 +212,7 @@ const StockViewer = () => {
                     text: "Price (USD)",
                   },
                   ticks: {
-                    beginAtZero: false,
+                    beginAtZero: true, // Start Y-axis at zero to avoid scaling issues
                   },
                   grid: {
                     drawBorder: true,
