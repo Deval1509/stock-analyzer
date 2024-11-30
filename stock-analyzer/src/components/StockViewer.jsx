@@ -93,8 +93,10 @@ const StockViewer = () => {
 
   return (
     <div className="stock-viewer-container">
+      {/* Header */}
       <h1 className="stock-viewer-header">Stock Price Analyzer</h1>
-
+  
+      {/* Stock Search Input */}
       <div className="stock-input-container">
         <Select
           inputValue={searchTerm}
@@ -105,7 +107,8 @@ const StockViewer = () => {
           styles={customSelectStyles}
         />
       </div>
-
+  
+      {/* Date Range Inputs */}
       <div className="date-input-container">
         <label>
           From:
@@ -123,29 +126,26 @@ const StockViewer = () => {
             onChange={(e) => setToDate(e.target.value)}
           />
         </label>
+      </div>
+  
+      {/* Fetch Button */}
+      <div className="fetch-button-container">
         <button onClick={fetchHistoricalData} disabled={loading}>
           {loading ? "Fetching..." : "Fetch Data"}
         </button>
       </div>
-
+  
+      {/* Error Message */}
       {error && <p className="error-message">{error}</p>}
-
+  
+      {/* Chart Container */}
       {historicalData.length > 0 && (
         <div
           className={`chart-container ${
             isChartMaximized ? "maximized" : "minimized"
           }`}
-          style={{
-            width: isChartMaximized ? "90%" : "100%",
-            height: isChartMaximized ? "90vh" : "60vh",
-            maxWidth: "1200px",
-            margin: "0 auto",
-          }}
         >
-          <button
-            className="chart-toggle-button"
-            onClick={toggleChartSize}
-          >
+          <button className="chart-toggle-button" onClick={toggleChartSize}>
             {isChartMaximized ? "Minimize" : "Maximize"}
           </button>
           <h2>
@@ -172,8 +172,7 @@ const StockViewer = () => {
               plugins: {
                 tooltip: {
                   callbacks: {
-                    label: (context) =>
-                      `Price: $${context.raw.toFixed(2)}`,
+                    label: (context) => `Price: $${context.raw.toFixed(2)}`,
                   },
                 },
                 legend: {
@@ -204,7 +203,7 @@ const StockViewer = () => {
         </div>
       )}
     </div>
-  );
+  );  
 };
 
 export default StockViewer;

@@ -1,200 +1,180 @@
-/* Container for the entire application */
+/* Global Styles */
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; 
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-style: oblique;
+}
+
+/* Stock Viewer Container */
 .stock-viewer-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2%;
-    font-family: 'Arial, sans-serif';
-    background-color: #ecf0f1;
+    justify-content: flex-start;
+    padding: 5vw;
     min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(200deg, #d47318, #3515c5); 
     box-sizing: border-box;
-    overflow: hidden;
 }
 
-/* Header styling */
+/* Header */
 .stock-viewer-header {
-    font-size: 2.5em;
-    color: #2c3e50;
-    margin-bottom: 2%;
+    font-size: calc(2.5em + 1vw); 
+    color: #ffffff;
     text-align: center;
+    margin-bottom: 2vw;
+    text-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.3); 
 }
 
-/* Container for the search input */
+/* Stock Search Input */
 .stock-input-container {
-    width: 90%;
-    max-width: 90%;
     margin-bottom: 2%;
+    margin-right: 5%;
 }
 
-/* Date input container */
+.stock-input-container input {
+    font-size: calc(1em + 0.5vw); 
+    padding: 1vw;
+    margin-bottom: 3%;
+}
+
+/* Date Range Inputs */
 .date-input-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2%;
-    margin-bottom: 2%;
-    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+    margin-bottom: 2vw;
+
+    border-radius: 1vw;
+    padding: 1vw;
+    gap: 4vw;
 }
 
 .date-input-container label {
-    font-size: 1em;
-    color: #2c3e50;
+    flex: 1;
+    font-size: calc(1em + 0.5vw);
+    color: #ffffff;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 40%; /* Percentage width */
-}
-
-.date-input-container input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-top: 5px;
-    font-size: 1em;
-    width: 100%; /* Responsive input */
-}
-
-.date-input-container button {
-    padding: 10px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease-in-out;
-}
-
-.date-input-container button:hover {
-    background-color: #2980b9;
-}
-
-.date-input-container button:disabled {
-    background-color: #95a5a6;
-    cursor: not-allowed;
-}
-
-/* Error message styling */
-.error-message {
-    color: #e74c3c;
-    margin-top: 1%;
-    font-size: 1em;
-    text-align: center;
-}
-
-/* Chart container styling */
-.chart-container {
-    width: 90%; /* Dynamic width */
-    height: 60%; /* Dynamic height */
-    background-color: #fff;
-    padding: 2%;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease-in-out, height 0.3s ease-in-out;
-}
-
-.chart-container.maximized {
-    width: 100%;
-    height: 90vh; /* Adjust for fullscreen height */
-}
-
-.chart-container.minimized {
-    height: 60%;
-}
-
-.chart-container h2 {
-    margin-bottom: 2%;
-    text-align: center;
-    font-size: 1.5em;
-    color: #2c3e50;
-}
-
-/* Toggle button for the chart */
-.chart-toggle-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 5px 10px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease-in-out;
-}
-
-.chart-toggle-button:hover {
-    background-color: #2980b9;
-}
-
-/* Custom styles for the Select component */
-.react-select__control {
-    padding: 5px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    transition: border-color 0.3s ease-in-out;
-}
-
-.react-select__control:hover {
-    border-color: #3498db;
-}
-
-.react-select__menu {
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.react-select__option--is-focused {
-    background-color: #f0f0f0;
-    transition: background-color 0.3s ease-in-out;
-}
-
-.react-select__option--is-selected {
-    background-color: #3498db;
-    color: white;
+    align-items: flex-start; 
+    gap: 0.5vw;  
     font-weight: bold;
 }
 
-/* Accessibility: Focus outline */
-.react-select__control:focus-within {
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5);
+.date-input-container input {
+    padding: 1vw;
+    width: 100%;
+    border: 0.1vw solid #ccc;
+    border-radius: 0.5vw;
+    font-size: calc(1em + 0.5vw);
+    background-color: #ffffff;
+    box-shadow: 0 0.2vw 0.4vw rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
 }
 
-/* Responsive design for mobile */
-@media (max-width: 768px) {
-    .stock-viewer-header {
-        font-size: 2em;
-    }
+.date-input-container input:hover {
+    border-color: #af4261;
+    box-shadow: 0 0.2vw 0.6vw rgba(0, 0, 0, 0.2);
+}
 
-    .stock-input-container {
-        max-width: 100%;
-    }
+.date-input-container input:focus {
+    outline: none;
+    border-color: #f3ec78;
+    box-shadow: 0 0 0.6vw rgba(243, 236, 120, 0.8);
+}
+
+/* Fetch Button */
+.fetch-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2vw;
+}
+
+.fetch-button-container button {
+    padding: 1vw 4vw;
+    background-color: #ffffff;
+    color: #af4261;
+    border: none;
+    border-radius: 1.5vw;
+    font-size: calc(1em + 0.5vw);
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0.4vw 0.8vw rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+.fetch-button-container button:hover {
+    background-color: #995881;
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+.fetch-button-container button:disabled {
+    background-color: #ddd;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* Error Message */
+.error-message {
+    color: #ff6b6b;
+    font-size: calc(1em + 0.5vw);
+    text-align: center;
+    margin-bottom: 2vw;
+    font-weight: bold;
+}
+
+/* Chart Container */
+.chart-container {
+    width: 90%;
+    max-width: 1200px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 2vw;
+    border-radius: 2vw;
+    box-shadow: 0 0.4vw 0.8vw rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    margin-bottom: 2vw;
+}
+
+.chart-container h2 {
+    text-align: center;
+    font-size: calc(1.8em + 0.5vw);
+    color: #af4261;
+    margin-bottom: 2vw;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stock-input-container,
+    .date-input-container,
+    .fetch-button-container,
+    .chart-container {
+        width: 90%; 
 
     .date-input-container {
         flex-direction: column;
-        gap: 5%;
+        gap: 6vw;
+        align-items: flex-start;
+    }
+
+    .date-input-container label {
+        align-items: flex-start;
         width: 100%;
     }
 
-    .chart-container {
-        width: 100%;
-        height: 70%;
-        padding: 5%;
+    .fetch-button-container button {
+        font-size: calc(1em + 0.5vw);
     }
 
-    .chart-container.maximized {
-        height: 90vh;
+    .stock-viewer-header {
+        font-size: calc(2em + 1vw);
     }
-
-    .chart-container.minimized {
-        height: 70%; 
-    }
-
-    .chart-toggle-button {
-        font-size: 0.8em;
-    }
-}
+}}
