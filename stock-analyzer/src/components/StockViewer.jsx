@@ -3,6 +3,29 @@ import axios from "axios";
 import Select from "react-select";
 import { Line } from "react-chartjs-2";
 import "./StockViewer.css";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+
+// Register necessary components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 const StockViewer = () => {
   const [searchTerm, setSearchTerm] = useState("");
