@@ -204,12 +204,14 @@ const StockViewer = () => {
                   title: {
                     display: true,
                     text: "Price (USD)",
-                    font: {
-                      size: 14,
-                    },
                   },
                   ticks: {
-                    beginAtZero: true,
+                    beginAtZero: false, // Let the Y-axis start close to the lowest value
+                  },
+                  suggestedMin: Math.min(...historicalPrices) * 0.9, // Set min slightly below the lowest price
+                  suggestedMax: Math.max(...historicalPrices) * 1.1, // Set max slightly above the highest price
+                  grid: {
+                    drawBorder: true,
                   },
                 },
               },
