@@ -133,14 +133,14 @@ const StockViewer = () => {
       {historicalData.length > 0 && (
         <div
           className={`chart-container ${
-            isChartMaximized ? "maximized" : "minimized"
+            isChartMaximized ? "minimized" : "maximized"
           }`}
         >
           <button
             className="chart-toggle-button"
             onClick={toggleChartSize}
           >
-            {isChartMaximized ? "Minimize" : "Maximize"}
+            {isChartMaximized ? "Maximize" : "Minimize"}
           </button>
           <h2>
             Historical Data ({fromDate} to {toDate})
