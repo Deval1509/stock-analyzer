@@ -196,10 +196,13 @@ const StockViewer = () => {
                     display: true,
                     text: "Price (USD)",
                   },
-                  min: Math.min(...historicalPrices) - 10,
-                  max: Math.max(...historicalPrices) + 10, 
+                  suggestedMin: Math.min(...historicalPrices) - 10,
+                  suggestedMax: Math.max(...historicalPrices) + 10,
                   ticks: {
-                    stepSize: 10, 
+                    stepSize: Math.max(
+                      Math.ceil((Math.max(...historicalPrices) - Math.min(...historicalPrices)) / 5),
+                      1
+                    ), // Calculate dynamic step size based on the range
                   },
                 },
               },
