@@ -177,7 +177,8 @@ const StockViewer = () => {
             }}
             options={{
               responsive: true,
-              maintainAspectRatio: true,
+              maintainAspectRatio: true, // Keeps the aspect ratio of the chart
+              aspectRatio: 2, // Set the width:height ratio (e.g., 2 means 2:1)
               plugins: {
                 tooltip: {
                   callbacks: {
@@ -201,6 +202,9 @@ const StockViewer = () => {
                   ticks: {
                     autoSkip: true,
                     maxTicksLimit: 10,
+                    font: {
+                      size: 12,
+                    },
                   },
                   grid: {
                     display: true,
@@ -212,7 +216,7 @@ const StockViewer = () => {
                     text: "Price (USD)",
                   },
                   ticks: {
-                    beginAtZero: true, // Start Y-axis at zero to avoid scaling issues
+                    beginAtZero: false,
                   },
                   grid: {
                     drawBorder: true,
