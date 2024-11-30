@@ -56,19 +56,17 @@ const StockViewer = () => {
         return;
       }
   
-      console.log("Fetching data for:", { symbol, fromDate, toDate });
+      const response = await axios.get("https://stock-analyzer-db.onrender.com/historical", {
+        params: { symbol, from: fromDate, to: toDate },
+      });
   
-      const response = await axios.get(
-        "https://stock-analyzer-db.onrender.com/historical",
-        {
-          params: { symbol, from: fromDate, to: toDate },
-        }
-      );
+      console.log("API Response:", response.data);
   
-      console.log("Response data:", response.data);
+      // Extract the data array
+      const { data: prices } = response.data;
   
-      if (response.data && response.data.prices) {
-        setHistoricalData(response.data.prices);
+      if (prices && prices.length > 0) {
+        setHistoricalData(prices);
         setError("");
       } else {
         setError("No historical data available for the selected range.");
@@ -76,14 +74,15 @@ const StockViewer = () => {
       }
     } catch (err) {
       setError("Failed to fetch historical data.");
-      console.error("Error fetching data:", err);
+      console.error(err);
     }
   };
+  
 
   // Extract time and price data for the historical chart
-  const historicalTimes = historicalData.map((entry) => entry.time);
-  const historicalPrices = historicalData.map((entry) => entry.price);
-
+  const historicalTimes = historicalData.map((entry) => entry.time); 
+  const historicalPrices = historicalData.map((entry) => entry.price); 
+  
   return (
     <div className="stock-viewer-container">
       <h1 className="stock-viewer-header">Stock Price Analyzer</h1>
