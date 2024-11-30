@@ -185,24 +185,31 @@ const StockViewer = () => {
                   title: {
                     display: true,
                     text: "Date",
+                    font: {
+                      size: 14,
+                    },
                   },
                   ticks: {
                     autoSkip: true,
                     maxTicksLimit: 10,
+                    font: {
+                      size: 12,
+                    },
+                  },
+                  grid: {
+                    display: true, 
                   },
                 },
                 y: {
                   title: {
                     display: true,
                     text: "Price (USD)",
+                    font: {
+                      size: 14,
+                    },
                   },
-                  suggestedMin: Math.min(...historicalPrices) - 10,
-                  suggestedMax: Math.max(...historicalPrices) + 10,
                   ticks: {
-                    stepSize: Math.max(
-                      Math.ceil((Math.max(...historicalPrices) - Math.min(...historicalPrices)) / 5),
-                      1
-                    ), // Calculate dynamic step size based on the range
+                    beginAtZero: true,
                   },
                 },
               },
