@@ -107,9 +107,6 @@ const StockViewer = () => {
   const historicalTimes = historicalData.map((entry) => entry.time);
   const historicalPrices = historicalData.map((entry) => entry.price);
 
-  // Calculate suggested Y-axis bounds
-  const suggestedMin = Math.min(...historicalPrices) * 0.95 || 0; 
-  const suggestedMax = Math.max(...historicalPrices) * 1.05 || 100; 
 
   return (
     <div className="stock-viewer-container">
@@ -174,15 +171,15 @@ const StockViewer = () => {
                   borderColor: "#3498db",
                   backgroundColor: "rgba(52, 152, 219, 0.5)",
                   pointRadius: 5,
-                  pointHoverRadius: 10,
-                  hoverBorderWidth: 3, 
+                  pointHoverRadius: 8,
                   fill: true,
                 },
               ],
             }}
             options={{
               responsive: true,
-              maintainAspectRatio: false,
+              maintainAspectRatio: true, // Keeps the aspect ratio of the chart
+              aspectRatio: 2, // Set the width:height ratio (e.g., 2 means 2:1)
               plugins: {
                 tooltip: {
                   callbacks: {
@@ -219,17 +216,13 @@ const StockViewer = () => {
                     display: true,
                     text: "Price (USD)",
                   },
-                  suggestedMin,
-                  suggestedMax,
+                  ticks: {
+                    beginAtZero: false,
+                  },
                   grid: {
                     drawBorder: true,
                   },
                 },
-              },
-              interaction: {
-                mode: "nearest", 
-                axis: "x",
-                intersect: false,
               },
             }}
           />
