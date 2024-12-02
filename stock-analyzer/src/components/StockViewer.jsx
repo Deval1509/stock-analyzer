@@ -3,6 +3,8 @@ import axios from "axios";
 import Select from "react-select";
 import { Line } from "react-chartjs-2";
 import "./StockViewer.css";
+import BASE_URL from "../config";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -45,16 +47,14 @@ const StockViewer = () => {
         setSearchResults([]);
         return;
       }
-  
-      const response = await axios.get(
-        "https://stock-analyzer-db.onrender.com/search",
-        {
-          params: { query, _: new Date().getTime() },
-        }
-      );
-  
-      console.log("API Response:", response.data); // Debugging
-  
+
+      // Make the API call using BASE_URL
+      const response = await axios.get(`${BASE_URL}/search`, {
+        params: { query, _: new Date().getTime() },
+      });
+
+      console.log("API Response:", response.data);
+
       const results = response.data.map((stock) => ({
         value: stock.symbol,
         label: `${stock.name} (${stock.symbol})`,
@@ -82,9 +82,7 @@ const StockViewer = () => {
       }
   
       setLoading(true);
-      const response = await axios.get(
-        "https://stock-analyzer-db.onrender.com/historical",
-        {
+      const response = await axios.get(`${BASE_URL}/historical`, {
           params: { symbol, from: fromDate, to: toDate },
         }
       );
