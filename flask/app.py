@@ -153,13 +153,14 @@ app = Flask(__name__)
 # else: 
 FLASK_ENV = os.getenv("FLASK_ENV", "development")
 
+
 if FLASK_ENV == "production":
     CORS(app, resources={r"/*": {"origins": "https://deval1509.github.io"}})
-    BASE_URL = "https://stock-analyzer-db.onrender.com"  # Replace with your actual Render backend URL
+    BASE_URL = "https://stock-analyzer-db.onrender.com"
 else:
-    CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})
+    CORS(app, resources={r"/*": {"origins": "*"}})
     BASE_URL = "http://127.0.0.1:5000"
-    
+
 app.register_blueprint(stock_blueprint, url_prefix="/stock")
 app.register_blueprint(historical_blueprint, url_prefix="/historical")
 
