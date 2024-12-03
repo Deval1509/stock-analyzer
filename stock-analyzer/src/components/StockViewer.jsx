@@ -3,7 +3,7 @@ import axios from "axios";
 import Select from "react-select";
 import { Line } from "react-chartjs-2";
 import "./StockViewer.css";
-import BASE_URL from "../config";
+const BASE_URL = "https://stock-analyzer-db.onrender.com";
 
 import {
   Chart as ChartJS,
