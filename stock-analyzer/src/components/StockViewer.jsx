@@ -38,6 +38,12 @@ const StockViewer = () => {
   const [historicalData, setHistoricalData] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [predictedData, setPredictedData] = useState("");
+  const [reasoning, setReasoning] = useState("");
+  const [historicalPrices, setHistoricalPrices] = useState([]);
+  const [showPredictions, setShowPredictions] = useState(false);
+
+
 
   // Fetch search results based on query
   const handleSearch = async (query) => {
@@ -49,7 +55,7 @@ const StockViewer = () => {
       }
 
       // Make the API call using BASE_URL
-      const response = await axios.get(`${BASE_URL}/search`, {
+      const response = await axios.get(`${BASE_URL}/stock/search`, {
         params: { query, _: new Date().getTime() },
       });
 
@@ -66,7 +72,7 @@ const StockViewer = () => {
       console.error(err);
     }
   };
-  
+
 
   // Fetch historical data based on selected stock and date range
   const fetchHistoricalData = async () => {
@@ -76,28 +82,27 @@ const StockViewer = () => {
         return;
       }
   
-      if (new Date(fromDate) > new Date(toDate)) {
-        setError("The 'From' date cannot be later than the 'To' date.");
+      setLoading(true);
+      const response = await axios.get(`${BASE_URL}/historical`, {
+        params: { symbol, from: fromDate, to: toDate },
+      });
+      
+      console.log("API Call Params:", { symbol, from: fromDate, to: toDate }); 
+      console.log("Historical Data Response:", response.data);
+
+      const rawHistoricalData = response.data.data || [];
+      const rawHistoricalPrices = rawHistoricalData.map((entry) => entry.price);
+      const validPrices = rawHistoricalPrices.filter((price) => price != null && !isNaN(price));
+  
+      if (validPrices.length < 30) {
+        setError("Insufficient valid historical data. At least 30 valid data points are required.");
+        setHistoricalData([]);
         return;
       }
   
-      setLoading(true);
-      const response = await axios.get(`${BASE_URL}/historical`, {
-          params: { symbol, from: fromDate, to: toDate },
-        }
-      );
-  
-      console.log("Historical Data Response:", response.data); // Debugging
-  
-      const { data: prices } = response.data;
-  
-      if (Array.isArray(prices) && prices.length > 0) {
-        setHistoricalData(prices);
-        setError("");
-      } else {
-        setError("No historical data available for the selected range.");
-        setHistoricalData([]);
-      }
+      setHistoricalData(rawHistoricalData);
+      setHistoricalPrices(validPrices);
+      setError("");
     } catch (err) {
       setError("Failed to fetch historical data.");
       console.error(err);
@@ -106,10 +111,32 @@ const StockViewer = () => {
     }
   };
   
-
-  // Extract time and price data for the historical chart
-  const historicalTimes = historicalData.map((entry) => entry.time);
-  const historicalPrices = historicalData.map((entry) => entry.price);
+  // Fetch Prediction data/chart
+  const handlePrediction = async () => {
+    try {
+      if (!historicalPrices || historicalPrices.length < 30) {
+        setError("Please fetch historical data before requesting predictions.");
+        return;
+      }
+  
+      setLoading(true);
+      const response = await axios.post(`${BASE_URL}/predict`, { data: historicalPrices });
+  
+      setPredictedData(response.data.predicted_prices);
+      setReasoning(response.data.reasoning);
+      setError("");
+    } catch (error) {
+      console.error("Error:", error);
+      setError(error.response?.data?.error || "Failed to fetch Predictions");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+    // Extract time and price data for the historical chart
+    const historicalTimes = historicalData.map((entry) => entry.time);
+    // const historicalPrices = historicalData.map((entry) => entry.price);
+    // const validHistoricalPrices = historicalPrices.filter((price) => price != null && !isNaN(price));
 
   return (
     <div className="stock-viewer-container">
@@ -155,6 +182,18 @@ const StockViewer = () => {
         </button>
       </div>
 
+      {/* Fetch Prediction*/}
+      <div className="fetch-button-container">
+      <button
+        onClick={() => {
+          handlePrediction();
+          setShowPredictions(true);
+        }}
+      >
+        Check Future Predictions
+       </button>
+      </div>
+
       {/* Error Message */}
       {error && <p className="error-message">{error}</p>}
 
@@ -181,8 +220,8 @@ const StockViewer = () => {
             }}
             options={{
               responsive: true,
-              maintainAspectRatio: true, // Keeps the aspect ratio of the chart
-              aspectRatio: 2, // Set the width:height ratio (e.g., 2 means 2:1)
+              maintainAspectRatio: true,
+              aspectRatio: 2,
               plugins: {
                 tooltip: {
                   callbacks: {
@@ -224,6 +263,56 @@ const StockViewer = () => {
                   },
                   grid: {
                     drawBorder: true,
+                  },
+                },
+              },
+            }}
+          />
+        </div>
+      )}
+      {showPredictions && predictedData && predictedData.length > 0 && (
+        <div className="chart-container">
+          <h2>Predicted Data</h2>
+          <Line
+            data={{
+              labels: Array.from({ length: predictedData.length }, (_, i) => `Day ${i + 1}`),
+              datasets: [
+                {
+                  label: "Predicted Stock Prices",
+                  data: predictedData,
+                  borderColor: "#e74c3c",
+                  backgroundColor: "rgba(231, 76, 60, 0.5)",
+                  pointRadius: 5,
+                  pointHoverRadius: 8,
+                  fill: true,
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                tooltip: {
+                  callbacks: {
+                    label: (context) => `Price: $${context.raw?.toFixed(2)}`,
+                  },
+                },
+                legend: {
+                  display: true,
+                  position: "top",
+                },
+              },
+              scales: {
+                x: {
+                  title: {
+                    display: true,
+                    text: "Future Days",
+                  },
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: "Price (USD)",
                   },
                 },
               },
