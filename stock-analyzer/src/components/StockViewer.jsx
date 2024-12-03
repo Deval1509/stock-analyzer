@@ -43,8 +43,6 @@ const StockViewer = () => {
   const [historicalPrices, setHistoricalPrices] = useState([]);
   const [showPredictions, setShowPredictions] = useState(false);
 
-
-
   // Fetch search results based on query
   const handleSearch = async (query) => {
     try {
