@@ -144,13 +144,7 @@ from routes.historical import historical_blueprint
 
 load_dotenv()
 app = Flask(__name__)
-# Enable CORS
-# # CHeck if running loaccally or in production
-# FLASK_ENV = os.getenv("FLASK_ENV", "development")
-# if FLASK_ENV == "production":
-#     CORS(app, resources={r"/*": {"origins": "https://deval1509.github.io"}})
-#     API_KEY = os.getenv("API_KEY")
-# else: 
+
 FLASK_ENV = os.getenv("FLASK_ENV", "development")
 
 
