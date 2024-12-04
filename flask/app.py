@@ -215,12 +215,12 @@ if __name__ == "__main__":
 # Environment setup
 FLASK_ENV = os.getenv("FLASK_ENV", "development")
 
-if FLASK_ENV == "production":
-    CORS(app, resources={r"/*": {"origins": "https://deval1509.github.io"}})
-    BASE_URL = "https://stock-analyzer-db.onrender.com"
-else:
-    CORS(app, resources={r"/*": {"origins": "*"}})
-    BASE_URL = "http://127.0.0.1:5000"
+# if FLASK_ENV == "production":
+#     CORS(app, resources={r"/*": {"origins": "https://deval1509.github.io"}})
+#     BASE_URL = "https://stock-analyzer-db.onrender.com"
+# else:
+CORS(app, resources={r"/*": {"origins": "*"}})
+BASE_URL = "http://127.0.0.1:5000"
 
 # Register blueprints
 app.register_blueprint(stock_blueprint, url_prefix="/stock")
