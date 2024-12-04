@@ -5,6 +5,7 @@ import { Line } from "react-chartjs-2";
 import "./StockViewer.css";
 const BASE_URL = "https://stock-analyzer-db.onrender.com";
 
+
 import {
   Chart as ChartJS,
   CategoryScale,
