@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import requests
-from utils.constants import BASE_URL, API_KEY
+from backend.utils.constants import BASE_URL, API_KEY
 
 stock_blueprint = Blueprint("stock", __name__)
 

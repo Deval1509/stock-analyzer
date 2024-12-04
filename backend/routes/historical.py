@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from datetime import datetime
 import requests
-from utils.constants import BASE_URL, API_KEY
+from backend.utils.constants import BASE_URL, API_KEY
 
 historical_blueprint = Blueprint("historical", __name__)
 
