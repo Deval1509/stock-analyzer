@@ -128,25 +128,91 @@
 #         return jsonify({"error": str(e)}), 500
 # if __name__ == "__main__":
 #     app.run(debug=False)
+#########################################################
+# from flask import Flask, request, jsonify
+# from flask_cors import CORS
+# from tensorflow.keras.models import load_model
+# from sklearn.preprocessing import MinMaxScaler
+# import numpy as np
+# # from dotenv import load_dotenv
+# import os
+# import os
+# os.environ["TF_CPP_MIN_LOG_LEVEL"] = os.getenv("TF_CPP_MIN_LOG_LEVEL", "2")
+# from routes.stock import stock_blueprint
+# from routes.historical import historical_blueprint
+
+
+# # load_dotenv()
+# app = Flask(__name__)
+
+# FLASK_ENV = os.getenv("FLASK_ENV", "development")
+
+
+# if FLASK_ENV == "production":
+#     CORS(app, resources={r"/*": {"origins": "https://deval1509.github.io"}})
+#     BASE_URL = "https://stock-analyzer-db.onrender.com"
+# else:
+#     CORS(app, resources={r"/*": {"origins": "*"}})
+#     BASE_URL = "http://127.0.0.1:5000"
+
+# app.register_blueprint(stock_blueprint, url_prefix="/stock")
+# app.register_blueprint(historical_blueprint, url_prefix="/historical")
+
+
+# # Load the pre-trained model
+# # model = load_dotenv("models/stock_prediction_model.h5")
+# model.compile(optimizer="adam", loss="mean_squared_error")
+# predictions = model.predict(X_test)
+# predicted_prices = scaler.inverse_transform(predictions).flatten().tolist()
+
+
+
+# @app.route("/predict", methods=["POST"])
+# def predict():
+#     try:
+#         # Retrieve historical price data from the request
+#         historical_prices = request.json.get("data")
+#         if not historical_prices or len(historical_prices) < 30:
+#             return jsonify({"error": "Insufficient historical data. At least 30 data points are required."}), 400
+
+#         # Filter out invalid data
+#         historical_prices = [price for price in historical_prices if price is not None and not np.isnan(price)]
+#         if len(historical_prices) < 30:
+#             return jsonify({"error": "Insufficient valid historical data after filtering. At least 30 valid data points are required."}), 400
+
+#         # Preprocess the data
+#         scaler = MinMaxScaler(feature_range=(0, 1))
+#         scaled_data = scaler.fit_transform(np.array(historical_prices).reshape(-1, 1))
+#         X_test = np.array([scaled_data[-30:]])  # Use the last 30 data points
+#         X_test = X_test.reshape((1, 30, 1))
+
+#         # Make prediction
+#         predictions = model.predict(X_test)
+#         predicted_prices = scaler.inverse_transform(predictions).flatten().tolist()
+
+#         # Generate reasoning
+#         reasoning = (
+#             "The prediction is based on recent price trends analyzed by the LSTM model. "
+#             "The model identifies patterns in historical data to project future prices."
+#         )
+
+#         return jsonify({"predicted_prices": predicted_prices, "reasoning": reasoning})
+#     except Exception as e:
+#         return jsonify({"error": f"An error occurred during prediction: {str(e)}"}), 500
+#########################################################
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
-from dotenv import load_dotenv
 import os
-import os
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = os.getenv("TF_CPP_MIN_LOG_LEVEL", "2")
 from routes.stock import stock_blueprint
 from routes.historical import historical_blueprint
 
-
-load_dotenv()
 app = Flask(__name__)
 
+# Environment setup
 FLASK_ENV = os.getenv("FLASK_ENV", "development")
-
 
 if FLASK_ENV == "production":
     CORS(app, resources={r"/*": {"origins": "https://deval1509.github.io"}})
@@ -155,14 +221,9 @@ else:
     CORS(app, resources={r"/*": {"origins": "*"}})
     BASE_URL = "http://127.0.0.1:5000"
 
+# Register blueprints
 app.register_blueprint(stock_blueprint, url_prefix="/stock")
 app.register_blueprint(historical_blueprint, url_prefix="/historical")
-
-
-# Load the pre-trained model
-model = load_model("models/stock_prediction_model.h5")
-model.compile(optimizer="adam", loss="mean_squared_error")
-
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -177,22 +238,17 @@ def predict():
         if len(historical_prices) < 30:
             return jsonify({"error": "Insufficient valid historical data after filtering. At least 30 valid data points are required."}), 400
 
-        # Preprocess the data
-        scaler = MinMaxScaler(feature_range=(0, 1))
-        scaled_data = scaler.fit_transform(np.array(historical_prices).reshape(-1, 1))
-        X_test = np.array([scaled_data[-30:]])  # Use the last 30 data points
-        X_test = X_test.reshape((1, 30, 1))
-
-        # Make prediction
-        predictions = model.predict(X_test)
-        predicted_prices = scaler.inverse_transform(predictions).flatten().tolist()
+        # Placeholder for prediction logic
+        # Replace this with your own algorithm if not using TensorFlow
+        predictions = [price * 1.01 for price in historical_prices[-30:]]  # Example: Increase by 1%
 
         # Generate reasoning
-        reasoning = (
-            "The prediction is based on recent price trends analyzed by the LSTM model. "
-            "The model identifies patterns in historical data to project future prices."
-        )
+        reasoning = "This is a placeholder prediction. Implement a real model or logic here."
 
-        return jsonify({"predicted_prices": predicted_prices, "reasoning": reasoning})
+        return jsonify({"predicted_prices": predictions, "reasoning": reasoning})
     except Exception as e:
         return jsonify({"error": f"An error occurred during prediction: {str(e)}"}), 500
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
