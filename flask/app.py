@@ -210,7 +210,8 @@ from routes.stock import stock_blueprint
 from routes.historical import historical_blueprint
 
 app = Flask(__name__)
-
+if __name__ == "__main__":
+    app.run()
 # Environment setup
 FLASK_ENV = os.getenv("FLASK_ENV", "development")
 

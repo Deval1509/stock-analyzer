@@ -1,1 +1,1 @@
-web: python -m waitress --port=$PORT app:app
+web: gunicorn flask.app:app
