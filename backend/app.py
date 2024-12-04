@@ -205,8 +205,8 @@ from flask_cors import CORS
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import os
-from routes.stock import stock_blueprint
-from routes.historical import historical_blueprint
+from backend.routes.stock import stock_blueprint
+from backend.routes.historical import historical_blueprint
 
 app = Flask(__name__)
 
